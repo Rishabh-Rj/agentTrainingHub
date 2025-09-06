@@ -91,9 +91,9 @@ typings/
 .nuxt
 dist
 
-# Gatsby files
+# Gatsby files (not applicable to React)
 .cache/
-public
+# public - REMOVED because React needs public folder
 
 # Storybook build outputs
 .out
