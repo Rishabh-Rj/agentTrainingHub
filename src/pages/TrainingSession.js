@@ -373,7 +373,6 @@ function TrainingSession() {
       height: 'calc(100vh - 64px)', // Account for header
       display: 'flex', 
       flexDirection: 'column',
-      overflow: 'hidden', // Only for training session
       bgcolor: '#f8f9fa'
     }}>
       {/* Session Results Modal */}
@@ -555,89 +554,111 @@ function TrainingSession() {
         </motion.div>
       )}
 
-      {/* Header */}
-      <Container maxWidth="xl" sx={{ 
+      {/* Sticky Header - Always visible */}
+      <Box sx={{ 
         flexShrink: 0, 
-        py: 1,
+        py: 2,
+        px: 2,
         position: 'sticky',
         top: 0,
         backgroundColor: '#f8f9fa',
         zIndex: 10,
-        borderBottom: '1px solid #e9ecef'
+        borderBottom: '1px solid #e9ecef',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
       }}>
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <IconButton
-            onClick={() => navigate('/training-center')}
-            sx={{ mr: 2, color: '#003DA5' }}
-          >
-            <ArrowBackIcon />
-          </IconButton>
-          
-          <Box sx={{ flexGrow: 1 }}>
-            <Typography
-              variant="h5"
+          <Box sx={{ display: 'flex', alignItems: 'center', maxWidth: '1200px', mx: 'auto' }}>
+            <IconButton
+              onClick={() => navigate('/training-center')}
+              sx={{ mr: 2, color: '#003DA5' }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+            
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 700,
+                  color: '#003DA5',
+                  fontSize: '1.25rem',
+                }}
+              >
+                Training Session: {scenarioInfo?.title || 'Customer Service Training'}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: '#6c757d',
+                  fontSize: '0.875rem',
+                }}
+              >
+                Scenario: {scenarioInfo?.description || 'Customer Service Excellence'} • 
+                Duration: {formatDuration(sessionDuration)}
+              </Typography>
+            </Box>
+            
+            <Button
+              variant="outlined"
+              startIcon={<StopIcon />}
+              onClick={handleEndSession}
               sx={{
-                fontWeight: 700,
-                color: '#003DA5',
-                fontSize: '1.25rem', // Smaller heading
+                borderColor: '#dc3545',
+                color: '#dc3545',
+                fontWeight: 600,
+                '&:hover': {
+                  borderColor: '#c82333',
+                  backgroundColor: 'rgba(220, 53, 69, 0.05)',
+                },
               }}
             >
-              Training Session: {scenarioInfo?.title || 'Customer Service Training'}
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: '#6c757d',
-                fontSize: '0.875rem', // Smaller subtitle
-              }}
-            >
-              Scenario: {scenarioInfo?.description || 'Customer Service Excellence'} • 
-              Duration: {formatDuration(sessionDuration)}
-            </Typography>
+              End Session
+            </Button>
           </Box>
-          
-          <Button
-            variant="outlined"
-            startIcon={<StopIcon />}
-            onClick={handleEndSession}
-            sx={{
-              borderColor: '#dc3545',
-              color: '#dc3545',
-              '&:hover': {
-                borderColor: '#c82333',
-                backgroundColor: 'rgba(220, 53, 69, 0.05)',
-              },
-            }}
-          >
-            End Session
-          </Button>
-        </Box>
         </motion.div>
-      </Container>
+      </Box>
 
-      {/* Main Content */}
-      <Container maxWidth="xl" sx={{ flexGrow: 1, minHeight: 0, pb: 1, px: 2 }}>
-        <Grid container spacing={3} sx={{ height: '100%' }}>
-        {/* Left Column - Conversation */}
-        <Grid item xs={12} md={8}>
+      {/* Main Chat Area */}
+      <Box sx={{ 
+        flexGrow: 1, 
+        display: 'flex',
+        maxWidth: '1200px',
+        mx: 'auto',
+        width: '100%',
+        p: 2,
+        gap: 2,
+        minHeight: 0 // Important for flex
+      }}>
+        {/* Chat Column */}
+        <Box sx={{ 
+          flex: '1 1 65%',
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0
+        }}>
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            style={{ height: '100%' }}
+            style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
           >
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', minHeight: '400px', maxHeight: 'calc(100vh - 180px)' }}>
+            <Card sx={{ 
+              height: '100%', 
+              display: 'flex', 
+              flexDirection: 'column',
+              minHeight: 0 // Important for flex
+            }}>
               {/* Chat Header */}
               <Box
                 sx={{
                   p: 2,
                   borderBottom: '1px solid #e9ecef',
                   background: 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)',
+                  flexShrink: 0
                 }}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -661,20 +682,16 @@ function TrainingSession() {
                 </Box>
               </Box>
 
-              {/* Messages Area */}
+              {/* Messages Area - Simplified scrolling */}
               <Box
                 sx={{
                   flexGrow: 1,
                   overflowY: 'auto',
                   p: 2,
                   backgroundColor: '#f8f9fa',
-                  minHeight: 0, // Allow flex to work properly
-                  maxHeight: 'none', // Remove max height restriction
+                  minHeight: 0
                 }}
               >
-                {/* Debug: Show message count */}
-                {console.log('🔍 Current messages:', messages)}
-                
                 <AnimatePresence>
                   {messages.map((message) => (
                     <motion.div
@@ -684,9 +701,6 @@ function TrainingSession() {
                       transition={{ duration: 0.3 }}
                       style={{ marginBottom: 16 }}
                     >
-                      {/* Debug each message */}
-                      {console.log('🎨 Rendering message:', message.sender, message.text)}
-                      
                       <Box
                         sx={{
                           display: 'flex',
@@ -701,7 +715,7 @@ function TrainingSession() {
                             maxWidth: '75%',
                             minWidth: '200px',
                             background: message.sender === 'agent' 
-                              ? '#003DA5' // Solid blue for agent messages
+                              ? '#003DA5' 
                               : '#ffffff',
                             color: message.sender === 'agent' ? '#ffffff' : '#343a40',
                             borderRadius: message.sender === 'agent' 
@@ -804,7 +818,7 @@ function TrainingSession() {
                 <div ref={messagesEndRef} />
               </Box>
 
-              {/* Message Input */}
+              {/* Message Input - Always visible */}
               <Box sx={{ 
                 p: 2, 
                 borderTop: '1px solid #e9ecef',
@@ -843,6 +857,7 @@ function TrainingSession() {
                       px: 3,
                       color: 'white',
                       fontWeight: 600,
+                      minWidth: '120px',
                       '&:hover': {
                         background: 'linear-gradient(135deg, #1565c0 0%, #0d47a1 100%)',
                         transform: 'translateY(-1px)',
@@ -856,23 +871,34 @@ function TrainingSession() {
               </Box>
             </Card>
           </motion.div>
-        </Grid>
+        </Box>
 
-        {/* Right Column - Metrics */}
-        <Grid item xs={12} md={4}>
+        {/* Metrics Sidebar - Scrollable but doesn't affect chat */}
+        <Box sx={{ 
+          flex: '0 0 320px',
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0
+        }}>
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            style={{ height: '100%' }}
+            style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
           >
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, height: '100%' }}>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: 2, 
+              height: '100%',
+              overflowY: 'auto'
+            }}>
               {/* Current Empathy Score */}
-              <Card sx={{ p: 3 }}>
+              <Card sx={{ p: 3, flexShrink: 0 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                   <PsychologyIcon sx={{ color: '#003DA5' }} />
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Current Empathy Score
+                    Empathy Score
                   </Typography>
                 </Box>
                 
@@ -922,8 +948,8 @@ function TrainingSession() {
                 </Box>
               </Card>
 
-              {/* Detailed Metrics */}
-              <Card sx={{ p: 3, flexGrow: 1 }}>
+              {/* Performance Breakdown */}
+              <Card sx={{ p: 3, flexShrink: 0 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
                   Performance Breakdown
                 </Typography>
@@ -957,7 +983,7 @@ function TrainingSession() {
 
               {/* AI Feedback */}
               {feedback && (
-                <Card sx={{ p: 3 }}>
+                <Card sx={{ p: 3, flexShrink: 0 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                     <LightbulbIcon sx={{ color: '#FFD100' }} />
                     <Typography variant="h6" sx={{ fontWeight: 600 }}>
@@ -980,9 +1006,8 @@ function TrainingSession() {
               )}
             </Box>
           </motion.div>
-        </Grid>
-      </Grid>
-      </Container>
+        </Box>
+      </Box>
     </Box>
   );
 }
