@@ -125,19 +125,19 @@ function Welcome() {
               
               <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   size="large"
                   startIcon={<PlayIcon />}
                   onClick={handleGetStarted}
                   sx={{
-                    backgroundColor: '#FFD100',
-                    color: '#003DA5',
+                    borderColor: '#FFD100',
+                    color: '#FFD100',
                     fontWeight: 600,
                     px: 4,
                     py: 1.5,
                     '&:hover': {
-                      backgroundColor: '#FFC107',
-                      transform: 'translateY(-2px)',
+                      borderColor: '#FFC107',
+                      backgroundColor: 'rgba(255, 209, 0, 0.1)',
                     },
                   }}
                 >

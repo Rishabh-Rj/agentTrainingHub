@@ -532,17 +532,18 @@ function TrainingSession() {
                   Start New Training
                 </Button>
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   size="large"
                   onClick={() => navigate('/analytics')}
                   sx={{
-                    backgroundColor: '#FFD100',
-                    color: '#003DA5',
-                    fontWeight: 700,
+                    borderColor: '#FFD100',
+                    color: '#FFD100',
+                    fontWeight: 600,
                     px: 4,
                     py: 1.5,
                     '&:hover': {
-                      backgroundColor: '#E6BC00',
+                      borderColor: '#FFD100',
+                      backgroundColor: 'rgba(255, 209, 0, 0.1)',
                     },
                   }}
                 >
