@@ -185,11 +185,12 @@ export const apiService = {
           data: {
             sessionId: responseBody.sessionId || messageData.sessionId,
             empathyScore: responseBody.empathyScore,
-            responseTime: responseBody.responseTimeMs / 1000, // Convert to seconds
+            activeListeningScore: responseBody.activeListeningScore,
+            problemSolvingScore: responseBody.problemSolvingScore,
+            politenessScore: responseBody.politenessScore,
+            responseTime: responseBody.responseTimeMs ? responseBody.responseTimeMs / 1000 : 2, // Convert to seconds
             aiResponse: responseBody.aiResponse,
             feedback: responseBody.feedback,
-            timeFeedback: responseBody.timeFeedback,
-            responseTimeAnalysis: responseBody.responseTimeAnalysis,
             success: responseBody.success
           },
         };
@@ -197,7 +198,17 @@ export const apiService = {
       
       return {
         success: true,
-        data: response.data,
+        data: {
+          sessionId: response.data.sessionId || messageData.sessionId,
+          empathyScore: response.data.empathyScore,
+          activeListeningScore: response.data.activeListeningScore,
+          problemSolvingScore: response.data.problemSolvingScore,
+          politenessScore: response.data.politenessScore,
+          responseTime: response.data.responseTimeMs ? response.data.responseTimeMs / 1000 : 2,
+          aiResponse: response.data.aiResponse,
+          feedback: response.data.feedback,
+          success: true
+        },
       };
     } catch (error) {
       console.warn('Send Message API failed, using fallback response:', error.message);
@@ -210,6 +221,9 @@ export const apiService = {
         data: {
           sessionId: messageData.sessionId,
           empathyScore: empathyScore,
+          activeListeningScore: Math.max(empathyScore - 5, 40),
+          problemSolvingScore: Math.max(empathyScore - 10, 35),
+          politenessScore: Math.min(empathyScore + 10, 95),
           responseTime: Math.random() * 3 + 1, // 1-4 seconds
           aiResponse: this.generateAIResponse(messageData.message, empathyScore),
           feedback: this.generateFeedback(empathyScore),

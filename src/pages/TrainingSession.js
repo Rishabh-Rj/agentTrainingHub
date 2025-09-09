@@ -204,18 +204,22 @@ function TrainingSession() {
       const responseTimeMs = endTime - startTime;
 
       if (response && response.success) {
-        // Update metrics with real AWS response
+        // Update metrics with real API response data
         const realEmpathyScore = response.data.empathyScore || 75;
+        const realActiveListening = response.data.activeListeningScore || 75;
+        const realProblemSolving = response.data.problemSolvingScore || 75;
+        const realPoliteness = response.data.politenessScore || 75;
+        
         setEmpathyScore(realEmpathyScore);
         setResponseTime(response.data.responseTime || responseTimeMs / 1000);
         setFeedback(response.data.feedback || 'Good response!');
         
-        // Update complex metrics
+        // Update metrics with real AI analysis
         setMetrics({
-          empathyKeywords: Math.min(realEmpathyScore + Math.random() * 10, 100),
-          activeListening: Math.min(realEmpathyScore - 5 + Math.random() * 10, 100),
-          solutionOriented: Math.min(realEmpathyScore - 10 + Math.random() * 15, 100),
-          politeness: Math.min(realEmpathyScore + 5 + Math.random() * 5, 100),
+          empathyKeywords: realEmpathyScore,
+          activeListening: realActiveListening,
+          solutionOriented: realProblemSolving,
+          politeness: realPoliteness,
         });
 
         // Add real AI response from AWS
@@ -234,17 +238,18 @@ function TrainingSession() {
           setIsTyping(false);
         }, 1500);
       } else {
-        // Fallback simulation
+        // Fallback simulation with more realistic base scores
         const simulatedScore = Math.min(60 + Math.random() * 30, 100);
         setEmpathyScore(simulatedScore);
         setResponseTime(responseTimeMs / 1000);
         setFeedback(simulatedScore >= 80 ? "Great empathetic response!" : "Try to show more understanding.");
         
+        // Use more realistic fallback metrics
         setMetrics({
-          empathyKeywords: Math.min(simulatedScore + Math.random() * 10, 100),
-          activeListening: Math.min(simulatedScore - 5 + Math.random() * 10, 100),
-          solutionOriented: Math.min(simulatedScore - 10 + Math.random() * 15, 100),
-          politeness: Math.min(simulatedScore + 5 + Math.random() * 5, 100),
+          empathyKeywords: Math.max(simulatedScore - 10, 40),
+          activeListening: Math.max(simulatedScore - 5, 45),
+          solutionOriented: Math.max(simulatedScore - 15, 35),
+          politeness: Math.min(simulatedScore + 10, 95),
         });
 
         // Simulated responses
